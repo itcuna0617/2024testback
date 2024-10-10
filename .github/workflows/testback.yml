@@ -20,3 +20,9 @@ jobs:
 
       - name: hello
         run: echo "hello world"
+
+      # 여러가지를 실행시키고 싶을 때는 run: 뒤에 |를 작성한 후 실행할 작업들을 작성해준다
+      - name: git hello
+        run: |
+          echo "git hello"
+          echo "hello world"
