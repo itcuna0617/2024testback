@@ -26,3 +26,9 @@ jobs:
         run: |
           echo "git hello"
           echo "hello world"
+
+      # 첫 번째는 commit에 대한 코드값을 출력해주고 두 번째는
+      - name: github actions
+        run: |
+          echo $GITHUB_SHA
+          echo $GITHUB_REPOSITORY
