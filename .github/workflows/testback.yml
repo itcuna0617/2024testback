@@ -13,3 +13,7 @@ jobs:
     name: testback build & deploy
     # ubuntu의 최신 버전을 사용하겠다는 의미
     runs-on: ubuntu-latest
+
+    steps:
+      - name: github action
+        run: echo "github action"
