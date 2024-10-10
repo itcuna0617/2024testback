@@ -27,8 +27,12 @@ jobs:
           echo "git hello"
           echo "hello world"
 
-      # 첫 번째는 commit에 대한 코드값을 출력해주고 두 번째는
+      # 첫 번째는 현재 action의 commit에 대한 코드값을 출력해주고 두 번째는 현재 github repository 경로 itcuna0617/2024testback 을 출력해준다
       - name: github actions
         run: |
           echo $GITHUB_SHA
           echo $GITHUB_REPOSITORY
+
+      - name: github secret
+        run: |
+          echo ${{ secrets.MY_HOBBY }}
