@@ -1,0 +1,15 @@
+# yml 파일 작성할 때는 : 뒤에 꼭 한 칸을 띄워야 한다.
+name: testback deployment
+
+# event에 해당
+on:
+  push:
+    branches: ["main"]
+
+# event가 발생할 때 동작하는 내용
+jobs:
+  build:
+    # name은 형식이 따로 없다.(comment 같은 느낌)
+    name: testback build & deploy
+    # ubuntu의 최신 버전을 사용하겠다는 의미
+    runs-on: ubuntu-latest
