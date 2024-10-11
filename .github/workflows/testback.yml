@@ -1,38 +1,62 @@
-# yml 파일 작성할 때는 : 뒤에 꼭 한 칸을 띄워야 한다.
-name: testback deployment
+# # yml 파일 작성할 때는 : 뒤에 꼭 한 칸을 띄워야 한다.
+# name: testback deployment
 
-# event에 해당
+# # event에 해당
+# on:
+#   push:
+#     branches: ["main"]
+
+# # event가 발생할 때 동작하는 내용
+# jobs:
+#   build:
+#     # name은 형식이 따로 없다.(comment 같은 느낌)
+#     name: testback build & deploy
+#     # ubuntu의 최신 버전을 사용하겠다는 의미
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: github action
+#         run: echo "github action"
+
+#       - name: hello
+#         run: echo "hello world"
+
+#       # 여러가지를 실행시키고 싶을 때는 run: 뒤에 |를 작성한 후 실행할 작업들을 작성해준다
+#       - name: git hello
+#         run: |
+#           echo "git hello"
+#           echo "hello world"
+
+#       # 첫 번째는 현재 action의 commit에 대한 코드값을 출력해주고 두 번째는 현재 github repository 경로 itcuna0617/2024testback 을 출력해준다
+#       - name: github actions
+#         run: |
+#           echo $GITHUB_SHA
+#           echo $GITHUB_REPOSITORY
+
+#       - name: github secret
+#         run: |
+#           echo ${{ secrets.MY_HOBBY }}
+name: Deploy To EC2
+
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
-# event가 발생할 때 동작하는 내용
 jobs:
-  build:
-    # name은 형식이 따로 없다.(comment 같은 느낌)
-    name: testback build & deploy
-    # ubuntu의 최신 버전을 사용하겠다는 의미
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: github action
-        run: echo "github action"
-
-      - name: hello
-        run: echo "hello world"
-
-      # 여러가지를 실행시키고 싶을 때는 run: 뒤에 |를 작성한 후 실행할 작업들을 작성해준다
-      - name: git hello
-        run: |
-          echo "git hello"
-          echo "hello world"
-
-      # 첫 번째는 현재 action의 commit에 대한 코드값을 출력해주고 두 번째는 현재 github repository 경로 itcuna0617/2024testback 을 출력해준다
-      - name: github actions
-        run: |
-          echo $GITHUB_SHA
-          echo $GITHUB_REPOSITORY
-
-      - name: github secret
-        run: |
-          echo ${{ secrets.MY_HOBBY }}
+      - name: SSH로 EC2에 접속하기
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/2024testback
+            git config --global --add safe.directory /home/ubuntu/2024testback
+            sudo git pull origin main
+            sudo ./gradlew bootwar
+            sudo fuser -k -n tcp 8080 
+            nohup java -jar build/libs/*SNAPSHOT.war > /dev/null 2>&1 &
