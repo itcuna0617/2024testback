@@ -24,7 +24,7 @@ public class FoodApi {
 	@Autowired
 	private FoodService foodService;
 
-	@GetMapping("/foodview")
+	@GetMapping("/foodsview")
 	public List<FoodView> getFoods() {
 		return foodService.getAllFoods();
 	}
